@@ -76,3 +76,59 @@ p_qq
   
 ```
 
+
+5. Evaluate variances and performa a Levene's Test for equal variances
+
+```{r}
+# If the largest sample variance is < 4x greater than the smallest sample variance, then these are "close enough" to consider variances equal
+
+variances <- penguins_df2 %>% 
+  group_by(common_name) %>% 
+  summarize(
+    variance = var(flipper_length)
+  )
+
+# Units are squared for variance = mm^2
+
+# The largest variance (33.1) is not 4x greater than the smallest variance (15.2)
+
+# Complete formal hypothesis for variances (f-test for two-samples, but need to use Levene's test because there are three)
+
+# Levene's test is in 'car' package
+
+levene_penguin <- leveneTest(flipper_length ~ common_name, data = penguins_df2)
+levene_penguin
+
+
+# H0: No difference in variances ( variances are equal)
+# HA: Variances are NOT equal
+
+# There is no significant difference in variances across species
+```
+
+6. Perform a one-way ANOVA for penguin flipper length by species (Common Name)
+
+```{r}
+penguin_aov <- aov(flipper_length ~ common_name, data = penguins_df2)
+
+summary(penguin_aov)
+
+
+# Sample means are this different because they were most likely drawn for different population
+# H0: Means across all groups are equal
+# HA: At least two group means differ significantly
+
+# Reject the null.  There is a difference.  Which two?  Use post-hoc testing.
+
+
+# H0:  No significant difference in pairwise means
+# HA: There is a significant difference in pairwise means
+penguin_pH <- TukeyHSD(penguin_aov)
+
+penguin_pH
+
+# Reject the null in every pairwise comparision
+
+```
+
+Mean flipper lengths of female penguins differed significantly for all species studied (one-way anova, F(df) = statistic, p < 0.001, $\alpha$ = 0.05 with post-hoc Tukey's HSD, $\alpha$ = 0.05)
