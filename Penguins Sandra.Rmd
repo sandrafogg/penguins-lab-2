@@ -42,3 +42,37 @@ View(counts)
 # Indicates that if n>30 if using means, CLT suggests that it is normal distribution. 
 # Perform other tests to see if mean is the best measure of central tendency
 ```
+
+# Create a new, simplified table
+```{r}
+penguins_df2 <- penguins_df %>%
+  mutate(
+    common_name = 
+      case_when(
+        species == "Chinstrap penguin (Pygoscelis antarctica)" ~ "Chinstrap",
+        species == "Adelie Penguin (Pygoscelis adeliae)" ~ "Adelie",
+        species == "Gentoo penguin (Pygoscelis papua)" ~ "Gentoo")) %>% 
+      select(-species) %>% 
+      filter(sex == "FEMALE")
+
+penguins_df
+```
+
+4. Make exploratory graphs and perform Levene's test
+```{r}
+p_hist <- ggplot(penguins_df2, aes(x = flipper_length)) +
+  geom_histogram(aes(fill = common_name)) +
+  facet_wrap(~ common_name, scale = "free")
+
+p_hist
+
+p_qq <- ggplot(penguins_df2, aes(sample = flipper_length))+
+  geom_qq(aes(color = common_name)) +
+  facet_wrap(~ common_name, scale = "free")
+
+p_qq
+
+# Based on qq-plots and histograms, observations for each group appear normally distributed.  Also, n > 30 for all groups, so means will be normally distrubuted by CLT. 
+  
+```
+
