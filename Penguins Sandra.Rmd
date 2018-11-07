@@ -1,0 +1,44 @@
+---
+title: "Penguin Flipper Lengths Anova"
+author: "Sandra Fogg"
+date: "11/7/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+1. Load Packages and read in penguins data
+
+```{r, include = FALSE}
+library(tidyverse)
+library(car)
+library(onewaytests)
+
+penguins_df <- read_csv("penguins.csv")
+```
+
+2. Is there a significant difference in mean flipper lengths for female Chinstrip, Gentoo, and Adelie Penguins near Palmer Archipelago?
+
+There is one factor: species
+There are three levels: Chinstrap, Gentoo, Adelie
+There is one continous variable: flippper length
+
+Perhaps we can use one-way ANOVA...if it meets assumptions
+- Independent observations
+- Equal Variance (Levene's Test)
+- Normality (histograms/qqplots)
+
+3. Find counts or "n" for each level
+
+counts <- with(penguins, table(species, sex))
+```{r}
+counts <- with(penguins_df, table(species, sex))
+
+View(counts)
+
+# Indicates that if n>30 if using means, CLT suggests that it is normal distribution. 
+# Perform other tests to see if mean is the best measure of central tendency
+```
